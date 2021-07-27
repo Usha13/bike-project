@@ -180,6 +180,9 @@ bikeRoutes.post('/comment', auth, async (req,res)=>{
                comments: comment
             },
         },{new: true}).populate("comments.postedBy","_id username")
+        if(!bike){
+            return res.status(404).send({"error": "Bike Not Exist"})
+        }
         res.status(200).send(bike)
     } catch (err) {
         res.status(400).json({"error": err.message})
