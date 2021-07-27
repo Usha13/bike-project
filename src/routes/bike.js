@@ -107,7 +107,7 @@ bikeRoutes.put('/like', auth, async (req,res)=>{
         const bk = await Bike.findOne({_id:req.body.bikeId, likes: [req.user._id]})
         if(bk){
                 return res.status(400).send({"error": "Already Liked"})
-            }
+        }
            
         const bike = await Bike.findByIdAndUpdate(req.body.bikeId, {
             $push:{
@@ -118,6 +118,9 @@ bikeRoutes.put('/like', auth, async (req,res)=>{
                 dislikes: req.user._id
              }
         },{new: true})
+        if(!bike){
+            return res.status(404).send({"error": "Bike Not Exist"})
+        }
         res.status(200).send(bike)
     } catch (err) {
         res.status(400).json({"error": err.message})
@@ -142,6 +145,9 @@ bikeRoutes.put('/dislike', auth, async (req,res)=>{
                 likes: req.user._id
              }
         },{new: true})
+        if(!bike){
+            return res.status(404).send({"error": "Bike Not Exist"})
+        }
         res.status(200).send(bike)
     } catch (err) {
         res.status(400).json({"error": err.message})
