@@ -52,11 +52,11 @@ bikeRoutes.patch('/:id', auth, async (req,res)=>{
             if(!biketype){
                 return res.status(404).send({"error": "Bike type does not exist"})
             }
-            const update = {...req.body , bike_type: biketype._id }
+            var update = {...req.body , bike_type: biketype._id }
             
         }
         else{
-            const update = {...req.body}
+            var update = {...req.body}
         }
         const bike =  await Bike.findOneAndUpdate({_id}, update, {new : true})
         res.status(200).send(bike)
