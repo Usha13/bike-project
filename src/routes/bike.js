@@ -174,13 +174,16 @@ bikeRoutes.post('/comment', auth, async (req,res)=>{
             commentText: req.body.comment,
             postedBy: req.user._id
         }
+        if(!req.body.comment || req.body.comment==''){
+            return res.status(404).send({"error": "Comment text required"})
+        }
     
         const bike = await Bike.findByIdAndUpdate(req.body.bikeId, {
             $push:{
                comments: comment
             },
         },{new: true}).populate("comments.postedBy","_id username")
-        
+
         if(!bike){
             return res.status(404).send({"error": "Bike Not Exist"})
         }
