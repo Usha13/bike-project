@@ -67,7 +67,7 @@ bikeRoutes.get('', auth, async (req,res)=>{
                 return res.status(400).send({"error" : "Bike Type does not exist. Please try another one"})
             }
  
-            await bikeType.populate('bikes')
+            await bikeType.populate({path: "bikes"}).execPopulate()
             console.log(bikeType)
             console.log(bikeType.bikes)
             return res.status(200).send(bikeType.bikes)

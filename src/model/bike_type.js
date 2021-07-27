@@ -15,7 +15,8 @@ const biketypeSchema = new mongoose.Schema({
 biketypeSchema.virtual('bikes', {
     ref: 'Bike',
     localField : '_id',
-    foreignField: 'bike_type'
+    foreignField: 'bike_type',
+    justOne: false,
 })
 
 const BikeType = mongoose.model('Bike_type', biketypeSchema)
