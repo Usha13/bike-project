@@ -20,7 +20,7 @@ bikeTypeRoutes.post('/',auth,async (req,res)=>{
     }
 })
 
-bikeTypeRoutes.get('/',auth,async (req,res)=>{
+bikeTypeRoutes.get('/', async (req,res)=>{
     
     try {
         const bt = await BikeType.find()

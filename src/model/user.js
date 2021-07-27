@@ -26,9 +26,9 @@ const userSchema = new mongoose.Schema({
         required : true,
         trim: true
     },
-    tokens : [{
-        token: {type: String}
-    }]
+    
+    token: {type: String}
+    
 }, { 
     timestamps : true
 })
@@ -38,7 +38,7 @@ userSchema.methods.toJSON= function () {
     const userObject = user.toObject()
 
     delete userObject.password
-    delete userObject.tokens
+    delete userObject.token
 
     return userObject
 }
@@ -46,10 +46,19 @@ userSchema.methods.toJSON= function () {
 userSchema.methods.generateAuthToken = async function() {
     const user = this
     const token = await jwt.sign({ _id : user._id.toString()}, process.env.JWT_SECRET)
-    user.tokens = user.tokens.concat({token})
+    user.token  = token
     await user.save()
 
     return token
+}
+
+userSchema.methods.deleteToken= function(token,cb){
+    var user=this;
+    
+    user.update({$unset : {token :1}},function(err,user){
+        if(err) return cb(err);
+        cb(null,user);
+    })
 }
 
 const User = mongoose.model('User', userSchema)

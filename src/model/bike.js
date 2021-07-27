@@ -11,6 +11,10 @@ const bikeSchema = new mongoose.Schema({
         required: true,
         ref : 'Bike_type' 
     },
+    createdBy: {
+        type: mongoose.Types.ObjectId,
+        ref : 'User' ,
+    },
     likes: {
         type: mongoose.Types.ObjectId,
         ref : 'User' ,
@@ -28,33 +32,28 @@ const bikeSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref : 'User' 
     },
-    comments : [{
+    comments : {
         commentText : {type : String},
         postedBy : {type: mongoose.Types.ObjectId, ref: "User"}
-    }],
+    },
     price : {
         type: Number,
         required: true
     },
     engine : {
-        type:String,
-        required: true
+        type:String
     },
     mileage  : {
-        type:String,
-        required: true
+        type:String
     },
     kerb_weight : {
-        type:String,
-        required: true
+        type:String
     },
     max_power : {
-        type:String,
-        required: true
+        type:String
     },
     fuel_capacity : {
-        type:String,
-        required: true
+        type:String
     }
 }, {
     timestamps : true

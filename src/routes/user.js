@@ -11,23 +11,25 @@ userroutes.post('/register', async (req,res)=>{
             return res.status(400).send({"error": "All fields are required"})
         }
         const hashpsw = await bcrypt.hash(password, 10)
-        const user =  new User({
+        const user = await new User({
             username,
             email,
             password: hashpsw
-        })
-        const u = await user.save()
-        const token = await u.generateAuthToken()
+        }).save()
+        const token = await user.generateAuthToken()
         console.log(token)
-        res.status(201).send({user:u, token})
-    } catch (e) {
-        res.status(400).send(e.message)
+        res.status(201).send({user, token})
+    } catch (err) {
+        res.status(400).json({"error": err.message})
     }
 })
 
-userroutes.post('/login', async (req,res)=>{
+userroutes.patch('/login', async (req,res)=>{
     const {email, password} = req.body
     try {
+        // if(req.token){
+        //     return res.status(400).send({"error": "Already Logged In"})
+        // }
         if(!email || !password){
             return res.status(400).send({"error": "Please provide both email and password"})
         }
@@ -45,18 +47,37 @@ userroutes.post('/login', async (req,res)=>{
 
         const token = await user.generateAuthToken()
         res.status(200).send({user, token})
-    } catch (e) {
-        res.status(400).send(e.message)
+    } catch (err) {
+        res.status(400).json({"error": err.message})
     }
 })
 
-userroutes.get('/me', auth , async (req,res)=>{
+userroutes.get('/profile', auth , async (req,res)=>{
     try {
         res.status(200).send(req.user)
     } catch (err) {
-        res.status(400).send(err.message)
+        res.status(400).json({"error": err.message})
     }
 })
+
+// userroutes.post('/logout',auth, async (req,res)=> {
+    
+//     try {
+//         req.user.tokens = []
+//         req.user.save()
+//         res.status(200).send({"message": "Logout Successfully"})
+//     } catch (err) {
+//         res.status(400).json({"error": err.message})
+//     }
+
+// })
+userroutes.get('/logout',auth,function(req,res){
+    req.user.deleteToken(req.token,(err,user)=>{
+        if(err) return res.status(400).send(err);
+        res.status(200).send({"message": "Logout Successfully"})
+    });
+
+}); 
 
 
 module.exports = userroutes
